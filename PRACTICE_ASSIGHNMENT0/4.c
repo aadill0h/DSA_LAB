@@ -74,8 +74,8 @@ void freelist(struct node* head) {
 }
 
 int main() {
-    struct node* head1 = NULL; // Initialize to NULL
-    struct node* head2 = NULL; // Initialize to NULL
+    struct node* head1 = NULL; 
+    struct node* head2 = NULL; 
     int ch = 1;
     int list_num;
     int n;
