@@ -43,24 +43,28 @@ void display(struct node* head) {
     }
 }
 
-void merge(struct node* a, struct node** b) {
-    struct node* a_temp = a;
-    struct node* b_temp = *b;
+struct node* sort_merge(struct node** a, struct node** b) {
+    struct node* temp_a = *a;
+    struct node* temp_b = *b;
+    struct node* copy;
 
-    struct node* a_next;
-    struct node* b_next;
+    while(temp_a != NULL && temp_b != NULL){
+        if(temp_a->num > temp_b->num){
+            copy=temp_b;
+            temp_b = temp_b->next;
+            copy->next = temp_a;
+            if(temp_a == *a){
+                (*a)=copy;
+            }
+        }
+        else{
+            copy = temp_a;
+            temp_a= temp_a->next;
+            copy->next = temp_b;
+        }
 
-    while (a_temp != NULL && b_temp != NULL) {
-        a_next = a_temp->next;
-        b_next = b_temp->next;
-
-        a_temp->next = b_temp;
-        b_temp->next = a_next;
-
-        a_temp = a_next;
-        b_temp = b_next;
     }
-    *b = b_temp;
+    *b=NULL;   
 }
 
 void freelist(struct node* head) {
@@ -78,7 +82,7 @@ int main() {
     int list_num;
     int n;
     while (ch != 4) {
-        printf("1.ADD\n2.DISPLAY\n3.MERGE\n");
+        printf("1.ADD 2.DISPLAY 3.MERGE  \n");
         printf("choice:");
         scanf("%d", &ch);
         switch (ch) {
@@ -101,14 +105,12 @@ int main() {
                 }
                 break;
             case 3:
-                merge(head1, &head2);
+                sort_merge(&head1, &head2);
                 display(head1);
-                printf("\n");
-                display(head2);
                 break;
+
         }
     }
     freelist(head1);
-    freelist(head2);
     return 0;
 }
