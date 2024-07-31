@@ -58,7 +58,7 @@ void peek(struct StackNode* top){
 
 int main()
 {
-    struct StackNode* top;
+    struct StackNode* top=NULL;
     int ch=1;
     int n;
     do{
