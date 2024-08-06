@@ -1,57 +1,54 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-struct  queue{
-    int size;
-    int * arr;
+struct StackNode {
+    int n;
+    struct StackNode* next;
 };
 
+void Display(struct StackNode* top) {
+    if (top == NULL) {
+        printf("empty\n");
+        return;
+    }
+    while (top != NULL) {
+        printf("%d ", top->n);
+        top = top->next;
+    }
+}
 
-int main(){
-    struct queue*  q1;
-    struct queue*  q2;
-
-    q1->size=0;
-    q1->arr = NULL;
-
-    q2->size=0;
-    q2->arr = NULL;
-
-
-};
-
-enqueue(struct queue * q, int n){
-    q->size++;
-    q->arr = (int *)realloc(q->arr, q->size * sizeof(int));
-    if (q->arr == NULL){
-        printf("memeory allocation failed!\n");
+struct StackNode* createNode(int num) {
+    struct StackNode* newNode = (struct StackNode*)malloc(sizeof(struct StackNode));
+    if (newNode == NULL) {
+        printf("Memory allocation failed\n");
         exit(1);
     }
-    q->arr[q->size-1] = n;
+    newNode->n=num;
+    newNode->next = NULL;
+    return newNode;
 }
 
-int dequeue(struct queue * q,int n){
-    if (q->size = 0){
-        printf("empty queue ");
-        exit(0);
+void enqueue(struct StackNode** top, int num) {
+    struct StackNode* newNode = createNode(num);
+    
+ }
+
+void pop(struct StackNode** top) {
+    if (*top == NULL) {
+        printf("empty\n");
+        return;
     }
-    int temp = q->arr[q->size - 1];
-    q->size--;
-    q->arr = (int *)realloc(q->arr, q->size * sizeof(int));
-    if(q->arr == NULL){
-        printf("memeory allocation failed\n");
-        exit(1);
-    }
-    return temp;
+    struct StackNode* temp = *top;
+    *top = (*top)->next;
+    printf("%d\n", temp->n);
+    free(temp);
 }
 
-void push(struct queue *q1,struct queue *q2, int n){
-    enqueue(q1,n);
-    for(int i=0 ; i<q2->size;i++){
-        enqueue(q1,dequeue(q2));
+void peek(struct StackNode* top){
+    if (top == NULL ){
+        printf("empty\n");
+        return;
     }
-    for(int i=0;i<q1->size; i++){
-
-    }
+    printf("%d\n",top->n);
+    return;
 }
-
-void pop(struct )

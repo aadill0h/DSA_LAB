@@ -74,7 +74,6 @@ void display(struct node* head)
 }
 
 
-
 int main()
 {
     struct node* head;
