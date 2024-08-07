@@ -229,6 +229,19 @@ void levelmax(struct node *root) {
     free(array);
 }
 
+//diameter
+int diameter(struct node* root){
+    if ( root == NULL){
+        return 0;
+    }
+    int left_height = levelsoftree(root->left);
+    int right_height = levelsoftree(root->right);
+
+    int left_diameter = diameter(root->left);
+    int right_diameter = diameter(root->right);
+
+    return max(left_height + right_height +1,max(left_diameter,right_diameter));
+}
 
 int main() {
     int n;
@@ -251,6 +264,9 @@ int main() {
     zigzag(root);
     printf("\n");
     levelmax(root);
+    printf("\n diameter");
+    int d= diameter(root);
+    printf("%d",d);
     return 0;
 }
 

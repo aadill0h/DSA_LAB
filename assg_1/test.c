@@ -34,14 +34,20 @@ void level_max_helper(struct max_arr_node** array, struct node* root, int d ){
 
 }
 
-void levelmax(struct node* root){
-    struct max_arr_node * array;
+
+
+void levelmax(struct node *root) {
+    struct max_arr_node *array = (struct max_arr_node *)malloc(sizeof(struct max_arr_node));
     array->capacity = 0;
     array->arr = NULL;
-    level_max_helper(&array,root,0);
-    for(int i=0; i<array->capacity; i++){
-        printf("%d ",array->arr[i]);
+
+    level_max_helper(&array, root, 0);
+
+    for (int i = 0; i < array->capacity; i++) {
+        printf("%d ", array->arr[i]);
     }
+    printf("\n");
+
     free(array->arr);
     free(array);
 }
