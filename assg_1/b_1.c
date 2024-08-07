@@ -44,22 +44,6 @@ int max(int a, int b) {
     return (a >= b) ? a : b;
 }
 
-// Function to insert a number into the binary tree
-void insert(struct node** root, int num) {
-    if (*root == NULL) {
-        *root = createnode(num);
-        return;
-    }
-    if ((*root)->num == num) {
-        return;
-    }
-    if ((*root)->num > num) {
-        insert(&(*root)->left, num);
-    } else {
-        insert(&(*root)->right, num);
-    }
-}
-
 // Function to free all nodes in the binary tree
 void freeall(struct node** root) {
     if (*root == NULL) {
@@ -147,18 +131,127 @@ void zigzag(struct node* root) {
     free_arr(ans);
 }
 
-int main() {
-    struct node* root = NULL;
-    insert(&root, 5);
-    insert(&root, 3);
-    insert(&root, 8);
-    insert(&root, 1);
-    insert(&root, 4);
-    insert(&root, 7);
-    insert(&root, 9);
-
-    printf("Zigzag Level Order Traversal: \n");
-    zigzag(root);
-    return 1;
+// Function to find the index of a value in the inorder array
+int search(int arr[], int strt, int end, int value) {
+    for (int i = strt; i <= end; i++) {
+        if (arr[i] == value)
+            return i;
+    }
+    return -1;
 }
+
+// Recursive function to construct the binary tree
+struct node* buildTree(int inorder[], int preorder[], int inorderStart, int inorderEnd, int* preorderIndex) {
+    if (inorderStart > inorderEnd)
+        return NULL;
+
+    struct node* treeNode = createnode(preorder[*preorderIndex]);
+    (*preorderIndex)++;
+
+    if (inorderStart == inorderEnd)
+        return treeNode;
+
+    int inorderIndex = search(inorder, inorderStart, inorderEnd, treeNode->num);
+
+    treeNode->left = buildTree(inorder, preorder, inorderStart, inorderIndex - 1, preorderIndex);
+    treeNode->right = buildTree(inorder, preorder, inorderIndex + 1, inorderEnd, preorderIndex);
+
+    return treeNode;
+}
+
+void printInorder(struct node* node) {
+    if (node == NULL)
+        return;
+    printInorder(node->left);
+    printf("%d ", node->num);
+    printInorder(node->right);
+}
+
+void printPostOrder(struct node* node){
+    if(node == NULL){
+        return;
+    }
+    printPostOrder(node->left);
+    printPostOrder(node->right);
+    printf("%d ",node->num);
+}
+
+//level max
+struct max_arr_node{
+    int capacity;
+    int * arr;
+};
+
+void push_max(struct max_arr_node** array,int n){
+    if((*array)->capacity==0){
+        (*array)->capacity = 1;
+        (*array)->arr = (int*)malloc((*array)->capacity *sizeof(int));
+    }
+    else{
+        (*array)->capacity++;
+        (*array)->arr=(int *)realloc((*array)->arr, (*array)->capacity * sizeof(int));
+    }
+    if((*array)->arr == NULL){
+        printf("memory allocation failed");
+        exit(1);
+    }
+    (*array)->arr[(*array)->capacity - 1] = n;
+}
+
+void level_max_helper(struct max_arr_node** array, struct node* root, int d ){
+    if (root == NULL){
+        return;
+    }
+    if(d == (*array)->capacity){
+        push_max(array,root->num);
+    }
+    else{
+        (*array)->arr[d] = max((*array)->arr[d], root->num);
+    }
+    level_max_helper((array),root->left,d+1);
+    level_max_helper((array),root->right,d+1);
+
+}
+
+void levelmax(struct node *root) {
+    struct max_arr_node *array = (struct max_arr_node *)malloc(sizeof(struct max_arr_node));
+    array->capacity = 0;
+    array->arr = NULL;
+
+    level_max_helper(&array, root, 0);
+
+    for (int i = 0; i < array->capacity; i++) {
+        printf("%d ", array->arr[i]);
+    }
+    printf("\n");
+
+    free(array->arr);
+    free(array);
+}
+
+
+int main() {
+    int n;
+    scanf("%d",&n);
+    int inorder[n],preorder[n];
+    printf("inorder:");
+    for(int i=0;i<n;i++){
+        scanf("%d",&inorder[i]);
+    }
+    printf("preorder:");
+    for(int i = 0; i < n; i++){
+        scanf("%d",&preorder[i]);
+    }
+    int preorderIndex = 0;
+    struct node* root = buildTree(inorder, preorder, 0, n - 1, &preorderIndex);
+
+    printf("postorder traversal of the constructed tree: \n");
+    printPostOrder(root);
+    printf("\n");
+    zigzag(root);
+    printf("\n");
+    levelmax(root);
+    return 0;
+}
+
 
