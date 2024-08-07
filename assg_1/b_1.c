@@ -167,12 +167,12 @@ void printInorder(struct node* node) {
     printInorder(node->right);
 }
 
-void printPostOrder(struct node* node){
+void PostOrder(struct node* node){
     if(node == NULL){
         return;
     }
-    printPostOrder(node->left);
-    printPostOrder(node->right);
+    PostOrder(node->left);
+    PostOrder(node->right);
     printf("%d ",node->num);
 }
 
@@ -243,6 +243,71 @@ int diameter(struct node* root){
     return max(left_height + right_height +1,max(left_diameter,right_diameter));
 }
 
+struct queue{
+    struct node* data;
+    struct queue* next;
+};
+
+struct queue* createque(struct node* data){
+    struct queue* newnode = (struct queue*)malloc(sizeof(struct queue));
+    if (newnode ==NULL ){
+        printf("queue memory allocation failed");
+        exit(1);
+    }
+    newnode->data = data;
+    newnode->next = NULL;
+    return newnode;
+}
+
+void enqueue(struct queue** q_head,struct node* data){
+    if((*q_head)==NULL){
+        *q_head = createque(data);
+        return;
+    }
+    struct queue* temp = *q_head;
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = createque(data);
+    return;
+}
+
+
+struct node* dequeue(struct queue** q_head) {
+    if (*q_head == NULL) {
+        return NULL;
+    }
+    struct queue* temp = *q_head;
+    struct node* data = temp->data;
+    *q_head = (*q_head)->next;
+    free(temp);
+    return data;
+}
+int isempty(struct queue* q_head){
+    if(q_head == NULL){
+        return 1;
+    }
+    return 0;
+}
+int rightleafsum(struct node* root) {
+    struct queue* q_head = NULL;
+    int sum = 0;
+    enqueue(&q_head, root);
+    while (!isempty(q_head)) {
+        struct node* curr = dequeue(&q_head);
+        if (curr->left != NULL) {
+            enqueue(&q_head, curr->left);
+        }
+        if (curr->right != NULL) {
+            if (curr->right->right == NULL && curr->right->left == NULL) {
+                sum += curr->right->num;
+            }
+            enqueue(&q_head, curr->right);
+        }
+    }
+    return sum;
+}
+
 int main() {
     int n;
     scanf("%d",&n);
@@ -258,16 +323,34 @@ int main() {
     int preorderIndex = 0;
     struct node* root = buildTree(inorder, preorder, 0, n - 1, &preorderIndex);
 
-    printf("postorder traversal of the constructed tree: \n");
-    printPostOrder(root);
-    printf("\n");
-    zigzag(root);
-    printf("\n");
-    levelmax(root);
-    printf("\n diameter");
-    int d= diameter(root);
-    printf("%d",d);
-    return 0;
+
+    char  ch ='p';
+    while( ch!='e'){
+        scanf("%c",&ch);
+        switch(ch){
+            case 'p':
+                PostOrder(root);
+                printf("\n");
+                break;
+            case 'z':
+                zigzag(root);
+                break;
+            case 'm':
+                levelmax(root);
+                break;
+            case 'd':
+                printf("%d\n",diameter(root));
+                break;
+            case 's':
+                printf("%d\n",rightleafsum(root));
+                break;
+            case 'e':
+                break;
+        }
+    }
+    freeall(&root);
+    return 1;
+    
 }
 
 
